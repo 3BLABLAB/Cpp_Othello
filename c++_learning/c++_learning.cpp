@@ -38,7 +38,7 @@ void make_board() {
 //盤面表示
 void show_board() {
 	cout << "---------------------------" << endl;
-	cout << "  12345678 " ;
+	cout << "   1 2 3 4 5 6 7 8 " ;
 	rep(j, 8) printf("%2d", j+1);
 	cout << endl;
 	char t='a';
@@ -47,7 +47,7 @@ void show_board() {
 		cout << char(t + i)<<" ";
 		rep(j, BOARD_SIZE) {
 			int t = board[i][j];
-			if (t == 0)cout << "-";
+			if (t == 0)cout << " -";
 			else if (t == 1) {
 				cout << "●";
 				wcount++;
