@@ -4,25 +4,26 @@
 
 #define rep(i,n) for(int i=0;i<n;i++)
 #define BOARD_SIZE 8
+#define DEPTH 3
 
 using namespace std;
-
-/*
-3e
-3d
-3c
-2d
-5c
-3b
-1d
-*/
 
 //0:- , 1:● , -1:○ 
 int board[BOARD_SIZE][BOARD_SIZE] = {};
 int t_board[BOARD_SIZE][BOARD_SIZE] = {};
 //マスごとの評価値
 int val[BOARD_SIZE][BOARD_SIZE] = {};
-//1:● -1:○ 
+int weitht[BOARD_SIZE][BOARD_SIZE] = {
+	99,-20,-20,20,20,-20,-20,99,
+	-20,-20,1,1,1,1,-20,-20,
+	20,1,1,1,1,1,1,20,
+	20,1,1,1,1,1,1,20,
+	20,1,1,1,1,1,1,20,
+	20,1,1,1,1,1,1,20,
+	-20,-20,1,1,1,1,-20,-20,
+	99,-20,-20,20,20,-20,-20,99
+};
+//1:● -1:○ プレイヤー：1 ,AI:-1
 int player = 1;
 
 
@@ -97,7 +98,7 @@ bool inside_board(int i, int j) {
 	return true;
 }
 
-bool check_plc(int i, int j) {
+bool check_puttable(int i, int j) {
 	//盤面の範囲内かどうか
 	if (!inside_board(i,j)) {
 		return false;
@@ -143,6 +144,19 @@ bool check_plc(int i, int j) {
 	}
 	//そこには置けない
 	return false;
+}
+
+//配置可能な座標をpairで返す
+vector<pair<int, int>> get_puutable_places() {
+	vector<pair<int, int>> ret;
+	rep(i, BOARD_SIZE) {
+		rep(j, BOARD_SIZE) {
+			if (check_puttable(i, j)) {
+				ret.push_back({ i, j });
+			}
+		}
+	}
+	return ret;
 }
 
 //コマ設置
@@ -209,7 +223,7 @@ bool flag_fin() {
 	rep(i, BOARD_SIZE) {
 		rep(j, BOARD_SIZE) {
 			//どこかに置ける
-			if (check_plc(i, j)) {
+			if (check_puttable(i, j)) {
 				return true;
 			}
 		}
@@ -220,7 +234,7 @@ bool flag_fin() {
 	rep(i, BOARD_SIZE) {
 		rep(j, BOARD_SIZE) {
 			//どこかに置ける
-			if (check_plc(i, j)) {
+			if (check_puttable(i, j)) {
 				cout << "パスしました" << endl;
 				player *= -1;
 				return true;
@@ -255,7 +269,7 @@ void AIturn() {
 	rep(i, BOARD_SIZE) {
 		rep(j, BOARD_SIZE) {
 			val[i][j] = 0;
-			if (check_plc(i, j)) {
+			if (check_puttable(i, j)) {
 				int a = place_stn(i, j, true);
 				val[i][j] = a;
 				if (a > count) {
@@ -269,12 +283,12 @@ void AIturn() {
 						val[i][j] = 99;
 					}
 					//すぐに取られるならやめておく
-					else if (board[i][j + 1] == 1) {
-						val[i][j] = -1;
-					}
-					else if (board[i][j - 1] == 1) {
-						val[i][j] = -1;
-					}
+					//else if (board[i][j + 1] == 1) {
+					//	val[i][j] = -1;
+					//}
+					//else if (board[i][j - 1] == 1) {
+					//	val[i][j] = -1;
+					//}
 					else val[i][j] = 9;
 				}
 				else if (j == 0 || j == BOARD_SIZE-1) {
@@ -298,6 +312,63 @@ void AIturn() {
 	place_stn(point.first, point.second, false);
 }
 
+pair<int, int> get_AI_hand() {
+	for(auto hand:get_puutable_places()) dfs(0, true, hand);
+}
+
+void dfs(int depth, bool is_AI_turn, pair<int,int> hand) {
+
+}
+
+int evaluate(bool is_AI_turn, pair<int, int> hand) {
+	int t_player = is_AI_turn ? -1 : 1;
+	rep(i, BOARD_SIZE) {
+		rep(j, BOARD_SIZE) {
+			t_board[i][j] = board[i][j];
+		}
+	}
+	int count = 0;
+	int i = hand.first, j = hand.second;
+	//挟んだ相手の駒を変更
+	//相手の駒を挟めるか
+	for (int d_i = -1; d_i < 2; d_i++) {
+		for (int d_j = -1; d_j < 2; d_j++) {
+			if (d_i == 0 && d_j == 0) continue;
+			//相手の駒が何個続くか
+			int times = 1;
+			//相手の駒が続いているか
+			while (true) {
+				int next_i = i + d_i * times;
+				int next_j = j + d_j * times;
+
+				//注目するマスが有効範囲内か
+				if (!inside_board(next_i, next_j))break;
+				//注目するマスが相手の駒じゃなかったら
+				if (board[next_i][next_j] != t_player * -1) {
+					break;
+				}
+				times++;
+			}
+
+			int next_i = i + d_i * times;
+			int next_j = j + d_j * times;
+			//注目するマスが有効範囲内か
+			if (!inside_board(next_i, next_j))continue;
+			//自分の駒で挟めていたら
+			if (board[next_i][next_j] == t_player && times > 1) {
+				rep(k, times) {
+					//駒を裏返していく
+					t_board[i + d_i * k][j + d_j * k] = t_player;
+					count++;
+				}
+				count--;
+			}
+		}
+	}
+	board[i][j] = t_player;
+	return count;
+}
+
 
 int main() {
 	make_board();
@@ -318,7 +389,7 @@ int main() {
 				//数値に変換
 				x = tx - 'a';
 				y = ty - '1';
-			} while (!check_plc(x, y));
+			} while (!check_puttable(x, y));
 			//cout << x << "行" << y << "列目" << endl
 			//cout << "player:" << player << endl;
 			place_stn(x, y, false);
@@ -333,3 +404,14 @@ int main() {
 	judge();
 	return 0;
 }
+
+
+/*
+3e
+3d
+3c
+2d
+5c
+3b
+1d
+*/
