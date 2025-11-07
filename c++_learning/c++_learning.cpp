@@ -4,7 +4,7 @@
 
 #define rep(i,n) for(int i=0;i<n;i++)
 #define BOARD_SIZE 8
-#define DEPTH 3
+#define DEPTH 2
 #define othello std::vector<std::vector<int>>
 #define INF 99999
 
@@ -14,18 +14,18 @@ using namespace std;
 //int board[BOARD_SIZE][BOARD_SIZE] = {};
 //マスごとの評価値
 int val[BOARD_SIZE][BOARD_SIZE] = {};
+int t_val[BOARD_SIZE][BOARD_SIZE] = {};
 int weitht[BOARD_SIZE][BOARD_SIZE] = {
-	30,-12,0,-1,-1,0,-12,30,
-	-12,-15,-3,-3,-3,-3,-15,-12,
-	0,-3,0,-1,-1,0,-3,0,
-	-1,-3,-1,-1,-1,-1,-3,-1,
-	-1,-3,-1,-1,-1,-1,-3,-1,
-	0,-3,0,-1,-1,0,-3,0,
-	-12,-15,-3,-3,-3,-3,-15,-12,
-	30,-12,0,-1,-1,0,-12,30
+	{99, -20, 20, 5, 5, 20, -20, 99},
+	{-20, -40, -5, -5, -5, -5, -40, -20},
+	{20, -5, 15, 3, 3, 15, -5, 20},
+	{5, -5, 3, 3, 3, 3, -5, 5},
+	{5, -5, 3, 3, 3, 3, -5, 5},
+	{20, -5, 15, 3, 3, 15, -5, 20},
+	{-20, -40, -5, -5, -5, -5, -40, -20},
+	{99, -20, 20, 5, 5, 20, -20, 99},
 };
-//1:● -1:○ プレイヤー：1 ,AI:-1
-int player = 1;
+
 
 
 //盤面生成
@@ -70,8 +70,8 @@ void show_board(const othello& board) {
 }
 
 //手番表示
-void show_player() {
-	if (player == 1) {
+void show_player(bool is_AI_turn) {
+	if (!is_AI_turn) {
 		cout << "先手(●)の番です" << endl;
 	}
 	else {
@@ -99,7 +99,7 @@ bool inside_board(int i, int j) {
 	return true;
 }
 
-bool check_puttable(int i, int j, const othello& board) {
+bool check_puttable(bool is_AI_turn, int i, int j, const othello& board) {
 	//盤面の範囲内かどうか
 	if (!inside_board(i,j)) {
 		return false;
@@ -109,7 +109,8 @@ bool check_puttable(int i, int j, const othello& board) {
 	if (board[i][j] != 0) {
 		return false;
 	}
-
+	//1:● -1:○ プレイヤー：1 ,AI:-1
+	int player = is_AI_turn ? -1 : 1;
 	//相手の駒を挟めるか
 	for (int d_i = -1; d_i < 2; d_i++) {
 		for (int d_j = -1; d_j < 2; d_j++) {
@@ -148,11 +149,11 @@ bool check_puttable(int i, int j, const othello& board) {
 }
 
 //配置可能な座標をpairで返す
-vector<pair<int, int>> get_puutable_places(const othello& board) {
+vector<pair<int, int>> get_puutable_places(bool is_AI_turn, const othello& board) {
 	vector<pair<int, int>> ret;
 	rep(i, BOARD_SIZE) {
 		rep(j, BOARD_SIZE) {
-			if (check_puttable(i, j, board)) {
+			if (check_puttable(is_AI_turn, i, j, board)) {
 				ret.push_back({ i, j });
 			}
 		}
@@ -163,9 +164,9 @@ vector<pair<int, int>> get_puutable_places(const othello& board) {
 //コマ設置
 //simu:シミュレーションかどうか
 //AIの手を考える時用
-int place_stn(int i, int j, othello& board) {
+int place_stn(bool is_AI_turn,int i, int j, othello& board) {
 	int count = 0;
-
+	int player = is_AI_turn ? -1 : 1;
 	//挟んだ相手の駒を変更
 	//相手の駒を挟めるか
 	for (int d_i = -1; d_i < 2; d_i++) {
@@ -206,31 +207,30 @@ int place_stn(int i, int j, othello& board) {
 	return count;
 }
 
-bool flag_fin(const othello& board) {
+bool flag_fin(bool& is_AI_turn, const othello& board) {
 	rep(i, BOARD_SIZE) {
 		rep(j, BOARD_SIZE) {
 			//どこかに置ける
-			if (check_puttable(i, j, board)) {
+			if (check_puttable(is_AI_turn, i, j, board)) {
 				return true;
 			}
 		}
 	}
-
+	
 	//プレイヤー交代で続行可能か
-	player *= -1;
 	rep(i, BOARD_SIZE) {
 		rep(j, BOARD_SIZE) {
 			//どこかに置ける
-			if (check_puttable(i, j, board)) {
+			if (check_puttable(!is_AI_turn, i, j, board)) {
 				cout << "パスしました" << endl;
-				player *= -1;
+				is_AI_turn = !is_AI_turn;
 				return true;
 			}
 		}
 	}
 	cout << "どこにも置けません" << endl;
-	if (player == 1)cout << "後手の勝利です" << endl;
-	else if (player == -1)cout << "先手の勝利です" << endl;
+	if (is_AI_turn)cout << "後手の勝利です" << endl;
+	else cout << "先手の勝利です" << endl;
 	return false;
 }
 
@@ -302,11 +302,10 @@ void AIturn(const othello& board) {
 */
 
 //考えられる手を引数に取る
-int evaluate(othello& board, pair<int, int> hand) {
+int evaluate(bool is_AI_turn, othello& board, pair<int, int> hand) {
 	//int t_player = is_AI_turn ? -1 : 1;
-
 	int i = hand.first, j = hand.second;
-	place_stn(i, j, board);
+	place_stn(is_AI_turn,i, j, board);
 
 	int score = 0;
 	rep(i, BOARD_SIZE) {
@@ -325,25 +324,27 @@ int evaluate(othello& board, pair<int, int> hand) {
 }
 
 int dfs(int depth, bool is_AI_turn, pair<int, int> hand, othello& board) {
-	if (depth == DEPTH) return evaluate(board, hand);
-
+	if (depth == DEPTH) return evaluate(is_AI_turn, board, hand);
+	int t = 0;
+	othello next_board = board;
+	place_stn(is_AI_turn, hand.first, hand.second, next_board);
 	if (is_AI_turn) {
 		int max_score = -INF;
-
-		for (auto hand : get_puutable_places(board)) {
-			othello next_board = board;
-			place_stn(hand.first, hand.second, next_board);
-			max_score = max(max_score, dfs(depth + 1, !is_AI_turn, hand, next_board));
+		for (auto hand : get_puutable_places(is_AI_turn, board)) {
+			int score = dfs(depth + 1, !is_AI_turn, hand, next_board);
+			cout << "AIの考えた手は" << char('a'+hand.first) << 1+hand.second << "でスコアは" << score << "です" << endl;;
+			max_score = max(max_score, score);
 		}
 		return max_score;
 	}
 	else {
 		int min_score = INF;
 
-		for (auto hand : get_puutable_places(board)) {
-			othello next_board = board;
-			place_stn(hand.first, hand.second, next_board);
-			min_score = min(min_score, dfs(depth + 1, !is_AI_turn, hand, next_board));
+		for (auto hand : get_puutable_places(is_AI_turn, board)) {
+			
+			int score = dfs(depth + 1, !is_AI_turn, hand, next_board);
+			cout << "人の考えられる手は" << char('a' + hand.first) << 1+hand.second << "でスコアは" << score << "です" << endl;;
+			min_score = min(min_score, score);
 		}
 		return min_score;
 	}
@@ -352,12 +353,14 @@ int dfs(int depth, bool is_AI_turn, pair<int, int> hand, othello& board) {
 
 pair<int, int> get_AI_hand(othello& board) {
 	//dfs(0, true, hand, board);
-	auto hands = get_puutable_places(board);
+	rep(i, BOARD_SIZE)rep(j, BOARD_SIZE) val[i][j] = 0;
+	auto hands = get_puutable_places(true, board);
 	pair<int, int> next_hand = hands[0];
 	int max_score = -INF;
 	for (auto hand : hands) {
 		int t = dfs(0, true, hand, board);
 
+		val[hand.first][hand.second] = t;
 		if (t > max_score) {
 			next_hand = hand;
 			max_score = t;
@@ -366,21 +369,21 @@ pair<int, int> get_AI_hand(othello& board) {
 	return next_hand;
 }
 
-
-
-
-
 int main() {
 	vector<vector<int>> board(BOARD_SIZE,vector<int>(BOARD_SIZE));
 	make_board(board);
 	char a = 'a';
 	int turn = 0;
 	bool flag = false;
-	while (flag_fin(board)) {
+	//1:● -1:○ プレイヤー：1 ,AI:-1
+	int player = 1;
+	bool is_AI_turn = player == -1;
+
+	while (flag_fin(is_AI_turn,board)) {
 		show_board(board);
-		show_player();
+		show_player(is_AI_turn);
 		int x, y;
-		if (get_puutable_places(board).empty()) {
+		if (get_puutable_places(is_AI_turn, board).empty()) {
 			if (flag)break;
 			flag = true;
 			continue;
@@ -396,7 +399,7 @@ int main() {
 				//数値に変換
 				x = tx - 'a';
 				y = ty - '1';
-			} while (!check_puttable(x, y, board));
+			} while (!check_puttable(is_AI_turn, x, y, board));
 			//cout << x << "行" << y << "列目" << endl
 			//cout << "player:" << player << endl;
 		}
@@ -405,8 +408,9 @@ int main() {
 			auto hand = get_AI_hand(board);
 			x = hand.first, y = hand.second;
 		}
-		place_stn(x, y, board);
+		place_stn(is_AI_turn, x, y, board);
 		player *= -1;
+		is_AI_turn = !is_AI_turn;
 		cout << "turn:" << ++turn << endl;
 	}
 	show_board(board);
