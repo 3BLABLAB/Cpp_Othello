@@ -328,22 +328,21 @@ int dfs(int depth, bool is_AI_turn, pair<int, int> hand, othello& board) {
 	int t = 0;
 	othello next_board = board;
 	place_stn(is_AI_turn, hand.first, hand.second, next_board);
-	if (is_AI_turn) {
+	is_AI_turn = !is_AI_turn;
+	if (!is_AI_turn) {
 		int max_score = -INF;
-		for (auto hand : get_puutable_places(is_AI_turn, board)) {
-			int score = dfs(depth + 1, !is_AI_turn, hand, next_board);
-			cout << "AIの考えた手は" << char('a'+hand.first) << 1+hand.second << "でスコアは" << score << "です" << endl;;
+		for (auto next_hand : get_puutable_places(is_AI_turn, next_board)) {
+			int score = dfs(depth + 1, is_AI_turn, next_hand, next_board);
+			cout << "depth:" << depth << " 人の考えられる手は" << char('a' + next_hand.first) << 1 + next_hand.second << "でスコアは" << score << "です" << endl;
 			max_score = max(max_score, score);
 		}
 		return max_score;
 	}
 	else {
 		int min_score = INF;
-
-		for (auto hand : get_puutable_places(is_AI_turn, board)) {
-			
-			int score = dfs(depth + 1, !is_AI_turn, hand, next_board);
-			cout << "人の考えられる手は" << char('a' + hand.first) << 1+hand.second << "でスコアは" << score << "です" << endl;;
+		for (auto next_hand : get_puutable_places(is_AI_turn, next_board)) { 
+			int score = dfs(depth + 1, is_AI_turn, next_hand, next_board);
+			cout << "depth:" << depth << " 人の考えられる最悪の手は" << char('a' + next_hand.first) << 1 + next_hand.second << "でスコアは" <<score << "です" << endl;
 			min_score = min(min_score, score);
 		}
 		return min_score;
@@ -358,13 +357,15 @@ pair<int, int> get_AI_hand(othello& board) {
 	pair<int, int> next_hand = hands[0];
 	int max_score = -INF;
 	for (auto hand : hands) {
+		cout << "AIの手一周目：" << char('a' + hand.first) << 1 + hand.second << endl;
 		int t = dfs(0, true, hand, board);
-
 		val[hand.first][hand.second] = t;
 		if (t > max_score) {
 			next_hand = hand;
 			max_score = t;
 		}
+		cout << "AIの手：" << char('a' + next_hand.first) << 1 + next_hand.second <<": "<<t<< endl;
+		cout << "-------------------------------------" << endl;
 	}
 	return next_hand;
 }
