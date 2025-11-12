@@ -3,6 +3,9 @@
   "WorkspaceRootPath": "C:\\Users\\rk3b0\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\github\\C-_Othello\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\include\\vector||{3B902123-F8A7-4915-9F01-361F908088D0}|"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{17FF6965-7E2E-497F-BFB9-418D14FBACE4}|c\u002B\u002B_learning\\c\u002B\u002B_learning.vcxproj|C:\\Users\\rk3b0\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\github\\C-_Othello\\c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{17FF6965-7E2E-497F-BFB9-418D14FBACE4}|c\u002B\u002B_learning\\c\u002B\u002B_learning.vcxproj|solutionrelative:c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
@@ -19,12 +22,25 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "vector",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\include\\vector",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\include\\vector",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\include\\vector",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\include\\vector",
+              "ViewState": "AgIAAHwHAAAAAAAAAAAhwIsHAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-11-12T13:45:31.056Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "c\u002B\u002B_learning.cpp",
               "DocumentMoniker": "C:\\Users\\rk3b0\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\github\\C-_Othello\\c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp",
               "RelativeDocumentMoniker": "c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp",
               "ToolTip": "C:\\Users\\rk3b0\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\github\\C-_Othello\\c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp",
               "RelativeToolTip": "c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp",
-              "ViewState": "AgIAAHcBAAAAAAAAAAAxwOwAAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAOIAAAAAAAAAAAAwwPMAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-09-10T15:35:15.707Z",
               "EditorCaption": ""

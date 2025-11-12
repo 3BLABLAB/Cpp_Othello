@@ -207,6 +207,20 @@ int place_stn(bool is_AI_turn,int i, int j, othello& board) {
 	return count;
 }
 
+void judge(const othello& board) {
+	int bcount = 0, wcount = 0;
+	rep(i, BOARD_SIZE) {
+		rep(j, BOARD_SIZE) {
+			if (board[i][j] == 1)wcount++;
+			else if (board[i][j] == -1)bcount++;
+		}
+	}
+	cout << "先手(●)：" << wcount << "　後手(○)：" << bcount << endl;
+	if (wcount > bcount)cout << "先手の勝利です" << endl;
+	else if (bcount > wcount)cout << "後手の勝利です" << endl;
+	else if (wcount == bcount)cout << "引き分けです" << endl;
+}
+
 bool flag_fin(bool& is_AI_turn, const othello& board) {
 	rep(i, BOARD_SIZE) {
 		rep(j, BOARD_SIZE) {
@@ -229,23 +243,8 @@ bool flag_fin(bool& is_AI_turn, const othello& board) {
 		}
 	}
 	cout << "どこにも置けません" << endl;
-	if (is_AI_turn)cout << "後手の勝利です" << endl;
-	else cout << "先手の勝利です" << endl;
+	judge(board);
 	return false;
-}
-
-void judge(const othello& board) {
-	int bcount = 0, wcount = 0;
-	rep(i, BOARD_SIZE) {
-		rep(j, BOARD_SIZE) {
-			if (board[i][j] == 1)wcount++;
-			else if (board[i][j] == -1)bcount++;
-		}
-	}
-	cout << "先手(●)：" << wcount << "　後手(○)：" << bcount << endl;
-	if (wcount > bcount)cout << "先手の勝利です" << endl;
-	else if (bcount > wcount)cout << "後手の勝利です" << endl;
-	else if (wcount == bcount)cout << "引き分けです" << endl;
 }
 
 //AIの次の手を考える
