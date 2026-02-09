@@ -410,6 +410,7 @@ int main() {
 			} while (!check_puttable(is_AI_turn, x, y, board));
 			//cout << x << "行" << y << "列目" << endl
 			//cout << "player:" << player << endl;
+			cout << "CPU Thinking..." << endl;
 		}
 		else if (player == -1) {
 			//AIの手を実行

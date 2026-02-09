@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\rk3b0\\Documents\\Github\\Cpp_Othello\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{17FF6965-7E2E-497F-BFB9-418D14FBACE4}|c\u002B\u002B_learning\\c\u002B\u002B_learning.vcxproj|C:\\Users\\rk3b0\\Documents\\Github\\Cpp_Othello\\c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{17FF6965-7E2E-497F-BFB9-418D14FBACE4}|c\u002B\u002B_learning\\c\u002B\u002B_learning.vcxproj|solutionrelative:c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "c\u002B\u002B_learning.cpp",
+              "DocumentMoniker": "C:\\Users\\rk3b0\\Documents\\Github\\Cpp_Othello\\c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp",
+              "RelativeDocumentMoniker": "c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp",
+              "ToolTip": "C:\\Users\\rk3b0\\Documents\\Github\\Cpp_Othello\\c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp",
+              "RelativeToolTip": "c\u002B\u002B_learning\\c\u002B\u002B_learning.cpp",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAABcAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-02-09T03:02:52.869Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
