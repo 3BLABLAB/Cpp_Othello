@@ -61,10 +61,10 @@ void show_board(const othello& board) {
 				bcount++;
 			}
 		}
-		cout << " ";
-		rep(j, BOARD_SIZE) {
-			printf("%2d",val[i][j]);
-		}
+		//cout << " ";
+		//rep(j, BOARD_SIZE) {
+		//	printf("%2d",val[i][j]);
+		//}
 		cout << endl;
 	}
 	cout << "先手(●):" << wcount << endl;
@@ -164,7 +164,6 @@ vector<pair<int, int>> get_puutable_places(bool is_AI_turn, const othello& board
 }
 
 //コマ設置
-//simu:シミュレーションかどうか
 //AIの手を考える時用
 int place_stn(bool is_AI_turn,int i, int j, othello& board) {
 	int count = 0;
@@ -324,31 +323,40 @@ int evaluate(bool is_AI_turn, othello& board, pair<int, int> hand) {
 	return score;
 }
 
-int dfs(int depth, bool is_AI_turn, pair<int, int> hand, othello& board) {
+int dfs(int depth, bool is_AI_turn, pair<int, int> hand, othello& board, int alpha, int beta) {
 	if (depth == DEPTH) return evaluate(is_AI_turn, board, hand);
-	int t = 0;
 	othello next_board = board;
 	place_stn(is_AI_turn, hand.first, hand.second, next_board);
 	is_AI_turn = !is_AI_turn;
+
 	if (!is_AI_turn) {
 		int max_score = -INF;
 		for (auto next_hand : get_puutable_places(is_AI_turn, next_board)) {
-			int score = dfs(depth + 1, is_AI_turn, next_hand, next_board);
+			int score = dfs(depth + 1, is_AI_turn, next_hand, next_board, alpha, beta);
 			if (DEBUG_OPTION) {
 				cout << "depth:" << depth << " 人の考えられる手は" << char('a' + next_hand.first) << 1 + next_hand.second << "でスコアは" << score << "です" << endl;
 			}
 			max_score = max(max_score, score);
+			alpha = max(alpha, score);
+			if (alpha >= beta) {
+				break;
+			}
 		}
 		return max_score;
 	}
 	else {
 		int min_score = INF;
 		for (auto next_hand : get_puutable_places(is_AI_turn, next_board)) { 
-			int score = dfs(depth + 1, is_AI_turn, next_hand, next_board);
+			int score = dfs(depth + 1, is_AI_turn, next_hand, next_board, alpha, beta);
 			if (DEBUG_OPTION) {
 				cout << "depth:" << depth << " 人の考えられる最悪の手は" << char('a' + next_hand.first) << 1 + next_hand.second << "でスコアは" << score << "です" << endl;
 			}
 			min_score = min(min_score, score);
+			beta = min(beta, score);
+
+			if (alpha >= beta) {
+				break;
+			}
 		}
 		return min_score;
 	}
@@ -361,11 +369,13 @@ pair<int, int> get_AI_hand(othello& board) {
 	auto hands = get_puutable_places(true, board);
 	pair<int, int> next_hand = hands[0];
 	int max_score = -INF;
+	int alpha = -INF;
+	int beta = INF;
 	for (auto hand : hands) {
 		if (DEBUG_OPTION) {
 			cout << "AIの手一周目：" << char('a' + hand.first) << 1 + hand.second << endl;
 		}
-		int t = dfs(0, true, hand, board);
+		int t = dfs(0, true, hand, board, alpha, beta);
 		//val[hand.first][hand.second] = t;
 		if (t > max_score) {
 			next_hand = hand;
@@ -410,9 +420,9 @@ int main() {
 			} while (!check_puttable(is_AI_turn, x, y, board));
 			//cout << x << "行" << y << "列目" << endl
 			//cout << "player:" << player << endl;
-			cout << "CPU Thinking..." << endl;
 		}
 		else if (player == -1) {
+			cout << "CPU Thinking..." << endl;
 			//AIの手を実行
 			auto hand = get_AI_hand(board);
 			x = hand.first, y = hand.second;
@@ -420,20 +430,9 @@ int main() {
 		place_stn(is_AI_turn, x, y, board);
 		player *= -1;
 		is_AI_turn = !is_AI_turn;
-		cout << "turn:" << ++turn << endl;
+		//cout << "turn:" << ++turn << endl;
 	}
 	show_board(board);
 	judge(board);
 	return 0;
 }
-
-
-/*
-3e
-3d
-3c
-2d
-5c
-3b
-1d
-*/
