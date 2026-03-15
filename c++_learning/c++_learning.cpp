@@ -17,7 +17,7 @@ using std::cout;
 //マスごとの評価値
 int val[BOARD_SIZE][BOARD_SIZE] = {};
 int t_val[BOARD_SIZE][BOARD_SIZE] = {};
-int weitht[BOARD_SIZE][BOARD_SIZE] = {
+int weight[BOARD_SIZE][BOARD_SIZE] = {
 	2714,  147,   69,  -18,  -18,   69,  147, 2714,
 	 147, -577, -186, -153, -153, -186, -577,  147,
 	  69, -186, -379, -122, -122, -379, -186,   69,
@@ -27,8 +27,6 @@ int weitht[BOARD_SIZE][BOARD_SIZE] = {
 	 147, -577, -186, -153, -153, -186, -577,  147,
 	2714,  147,   69,  -18,  -18,   69,  147, 2714
 };
-
-
 
 //盤面生成
 void make_board(othello& board) {
@@ -310,12 +308,12 @@ int evaluate(bool is_AI_turn, othello& board, pair<int, int> hand) {
 	int score = 0;
 	rep(i, BOARD_SIZE) {
 		rep(j, BOARD_SIZE) {
-			// weitht[i][j] はマスの重み
+			// weight[i][j] はマスの重み
 			if (board[i][j] == -1) { // AIの石
-				score += weitht[i][j];
+				score += weight[i][j];
 			}
 			else if (board[i][j] == 1) { // プレイヤーの石
-				score -= weitht[i][j];
+				score -= weight[i][j];
 			}
 		}
 	}
